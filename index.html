@@ -66,6 +66,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            cursor: pointer;
         }
 
         .logo img {
@@ -523,13 +524,122 @@
             font-size: 1.2rem;
             font-weight: 600;
         }
+
+        /* AI and GPS buttons */
+        .ai-gps-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Other page sections */
+        .page-section {
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-inprogress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-resolved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Tracking table */
+        .tracking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tracking-table th, .tracking-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tracking-table th {
+            background-color: var(--primary);
+            color: var(--text-on-primary);
+        }
+
+        .tracking-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Emergency contacts */
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .emergency-card {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: var(--text-on-primary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .emergency-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .emergency-card p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Contact form */
+        .contact-form {
+            display: grid;
+            gap: 20px;
+        }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
         <div class="container header-content">
-            <div class="logo">
+            <div class="logo" id="homeLogo">
                 <i class="fas fa-shield-alt fa-2x"></i>
                 <div>
                     <div class="logo-text">e-FIR System</div>
@@ -539,23 +649,23 @@
             
             <nav>
                 <ul>
-                    <li><a href="#" class="active">Home</a></li>
-                    <li><a href="#">File FIR</a></li>
-                    <li><a href="#">Track Complaint</a></li>
-                    <li><a href="#">Emergency</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="file-fir">File FIR</a></li>
+                    <li><a href="#" class="nav-link" data-page="track-complaint">Track Complaint</a></li>
+                    <li><a href="#" class="nav-link" data-page="emergency">Emergency</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
                 </ul>
             </nav>
             
             <div class="user-actions">
-                <button class="btn btn-outline"><i class="fas fa-user"></i> Login</button>
-                <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</button>
+                <button class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Login</button>
+                <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Register</button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Home Page -->
+    <section class="hero" id="homePage">
         <div class="container">
             <h1>File Police Complaints Online</h1>
             <p>Report incidents, file FIRs, and track your complaints through our secure online portal. Accessible anytime, anywhere.</p>
@@ -563,7 +673,6 @@
         </div>
     </section>
 
-    <!-- Dashboard Section -->
     <section class="dashboard" id="dashboardSection">
         <div class="container">
             <h2 class="section-title">Services We Provide</h2>
@@ -669,8 +778,8 @@
         </div>
     </section>
 
-    <!-- FIR Form Section (Initially Hidden) -->
-    <section class="dashboard hidden" id="formSection">
+    <!-- File FIR Page -->
+    <section class="dashboard hidden" id="fileFirPage">
         <div class="container">
             <div class="fir-tabs">
                 <div class="fir-tab active" data-form-type="cognizable">Cognizable FIR</div>
@@ -787,11 +896,21 @@
                         
                         <div class="form-group">
                             <label class="form-label" for="incidentLocation">Location of Incident *</label>
+                            <div class="ai-gps-buttons">
+                                <button type="button" class="btn btn-primary" id="getLocationBtn">
+                                    <i class="fas fa-map-marker-alt"></i> Get Current Location
+                                </button>
+                            </div>
                             <textarea id="incidentLocation" name="incidentLocation" class="form-textarea" required></textarea>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="incidentDescription">Detailed Description of Incident *</label>
+                            <div class="ai-gps-buttons">
+                                <button type="button" class="btn btn-primary" id="generateDescriptionBtn">
+                                    <i class="fas fa-robot"></i> Generate with AI
+                                </button>
+                            </div>
                             <textarea id="incidentDescription" name="incidentDescription" class="form-textarea" required></textarea>
                         </div>
                     </div>
@@ -863,7 +982,7 @@
                     
                     <div class="form-row" style="margin-top: 30px;">
                         <button type="button" class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);" id="backToDashboard">
-                            <i class="fas fa-arrow-left"></i> Back to Services
+                            <i class="fas fa-arrow-left"></i> Back to Home
                         </button>
                         <button type="reset" class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);">
                             <i class="fas fa-redo"></i> Reset Form
@@ -880,6 +999,175 @@
         </div>
     </section>
 
+    <!-- Track Complaint Page -->
+    <section class="dashboard hidden" id="trackComplaintPage">
+        <div class="container">
+            <h2 class="section-title">Track Your Complaint</h2>
+            
+            <div class="page-section">
+                <div class="form-group">
+                    <label class="form-label" for="firNumber">Enter FIR Number</label>
+                    <div class="form-row">
+                        <input type="text" id="firNumber" name="firNumber" class="form-input" placeholder="e.g., 112/2024">
+                        <button class="btn btn-primary" id="trackBtn">
+                            <i class="fas fa-search"></i> Track Complaint
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="trackingResults" class="hidden">
+                    <h3 class="form-title"><i class="fas fa-info-circle"></i> Complaint Status</h3>
+                    
+                    <table class="tracking-table">
+                        <thead>
+                            <tr>
+                                <th>FIR Number</th>
+                                <th>Date Registered</th>
+                                <th>Status</th>
+                                <th>Investigating Officer</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>112/2024</td>
+                                <td>15/05/2024</td>
+                                <td><span class="status-indicator status-inprogress">In Progress</span></td>
+                                <td>Inspector Sharma</td>
+                                <td>20/05/2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3 class="form-title mt-20"><i class="fas fa-history"></i> Status History</h3>
+                    
+                    <div class="form-group">
+                        <ul>
+                            <li><strong>20/05/2024:</strong> Investigation ongoing - evidence collection phase</li>
+                            <li><strong>18/05/2024:</strong> FIR assigned to investigating officer</li>
+                            <li><strong>15/05/2024:</strong> FIR registered successfully</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Page -->
+    <section class="dashboard hidden" id="emergencyPage">
+        <div class="container">
+            <h2 class="section-title">Emergency Contacts</h2>
+            
+            <div class="emergency-grid">
+                <div class="emergency-card">
+                    <h3><i class="fas fa-phone-alt"></i> Police</h3>
+                    <p>100</p>
+                    <p>24/7 Emergency Response</p>
+                </div>
+                
+                <div class="emergency-card">
+                    <h3><i class="fas fa-ambulance"></i> Ambulance</h3>
+                    <p>108</p>
+                    <p>Medical Emergency</p>
+                </div>
+                
+                <div class="emergency-card">
+                    <h3><i class="fas fa-fire"></i> Fire Brigade</h3>
+                    <p>101</p>
+                    <p>Fire Emergency</p>
+                </div>
+                
+                <div class="emergency-card">
+                    <h3><i class="fas fa-women"></i> Women's Helpline</h3>
+                    <p>1091</p>
+                    <p>24/7 Support for Women</p>
+                </div>
+                
+                <div class="emergency-card">
+                    <h3><i class="fas fa-child"></i> Child Helpline</h3>
+                    <p>1098</p>
+                    <p>Child Emergency & Protection</p>
+                </div>
+                
+                <div class="emergency-card">
+                    <h3><i class="fas fa-cyber-security"></i> Cyber Crime</h3>
+                    <p>1930</p>
+                    <p>Cyber Crime Complaints</p>
+                </div>
+            </div>
+            
+            <div class="page-section mt-20">
+                <h3 class="form-title"><i class="fas fa-exclamation-triangle"></i> Emergency Instructions</h3>
+                <div class="form-group">
+                    <p>In case of emergency:</p>
+                    <ol>
+                        <li>Stay calm and ensure your safety first</li>
+                        <li>Call the appropriate emergency number</li>
+                        <li>Provide clear details about your location</li>
+                        <li>Describe the nature of the emergency</li>
+                        <li>Follow instructions from emergency personnel</li>
+                        <li>If possible, wait in a safe location for help to arrive</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Page -->
+    <section class="dashboard hidden" id="contactPage">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="page-section">
+                        <h3 class="form-title"><i class="fas fa-map-marker-alt"></i> Police Headquarters</h3>
+                        <p>New Delhi, India</p>
+                        <p>Phone: +91-11-23817474</p>
+                        <p>Email: contact@police.gov.in</p>
+                        
+                        <h3 class="form-title mt-20"><i class="fas fa-clock"></i> Working Hours</h3>
+                        <p>Monday to Friday: 9:00 AM - 6:00 PM</p>
+                        <p>Saturday: 9:00 AM - 2:00 PM</p>
+                        <p>Sunday: Closed</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="page-section">
+                        <h3 class="form-title"><i class="fas fa-envelope"></i> Send us a Message</h3>
+                        
+                        <form class="contact-form">
+                            <div class="form-group">
+                                <label class="form-label" for="contactName">Your Name</label>
+                                <input type="text" id="contactName" name="contactName" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="contactEmail">Email Address</label>
+                                <input type="email" id="contactEmail" name="contactEmail" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="contactSubject">Subject</label>
+                                <input type="text" id="contactSubject" name="contactSubject" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="contactMessage">Message</label>
+                                <textarea id="contactMessage" name="contactMessage" class="form-textarea" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -887,11 +1175,11 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">File FIR</a></li>
-                        <li><a href="#">Track Complaint</a></li>
-                        <li><a href="#">Emergency Contacts</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="file-fir">File FIR</a></li>
+                        <li><a href="#" data-page="track-complaint">Track Complaint</a></li>
+                        <li><a href="#" data-page="emergency">Emergency Contacts</a></li>
+                        <li><a href="#" data-page="contact">Contact Us</a></li>
                     </ul>
                 </div>
                 
@@ -925,14 +1213,25 @@
 
     <script>
         // DOM elements
+        const homePage = document.getElementById('homePage');
         const dashboardSection = document.getElementById('dashboardSection');
-        const formSection = document.getElementById('formSection');
+        const fileFirPage = document.getElementById('fileFirPage');
+        const trackComplaintPage = document.getElementById('trackComplaintPage');
+        const emergencyPage = document.getElementById('emergencyPage');
+        const contactPage = document.getElementById('contactPage');
+        const homeLogo = document.getElementById('homeLogo');
         const startFirBtn = document.getElementById('startFirBtn');
         const backToDashboard = document.getElementById('backToDashboard');
         const formTypeIndicator = document.getElementById('formTypeIndicator');
         const firTypeInput = document.getElementById('firType');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const footerLinks = document.querySelectorAll('.footer-links a');
         const cards = document.querySelectorAll('.card');
         const tabs = document.querySelectorAll('.fir-tab');
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        const generateDescriptionBtn = document.getElementById('generateDescriptionBtn');
+        const trackBtn = document.getElementById('trackBtn');
+        const trackingResults = document.getElementById('trackingResults');
 
         // Form type definitions
         const formTypes = {
@@ -944,18 +1243,39 @@
             'counter': 'Counter FIR'
         };
 
-        // Show form section when "File a New Complaint" is clicked
-        startFirBtn.addEventListener('click', () => {
-            dashboardSection.classList.add('hidden');
-            formSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
+        // Show home page when logo is clicked
+        homeLogo.addEventListener('click', () => {
+            showPage('home');
         });
 
-        // Go back to dashboard
+        // Show form section when "File a New Complaint" is clicked
+        startFirBtn.addEventListener('click', () => {
+            showPage('file-fir');
+        });
+
+        // Go back to home page
         backToDashboard.addEventListener('click', () => {
-            formSection.classList.add('hidden');
-            dashboardSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
+            showPage('home');
+        });
+
+        // Handle navigation clicks
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                showPage(page);
+            });
+        });
+
+        // Handle footer navigation clicks
+        footerLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                if (page) {
+                    showPage(page);
+                }
+            });
         });
 
         // Handle card clicks to show specific form type
@@ -966,9 +1286,7 @@
                 const formType = card.getAttribute('data-form-type');
                 if (formType) {
                     setActiveForm(formType);
-                    dashboardSection.classList.add('hidden');
-                    formSection.classList.remove('hidden');
-                    window.scrollTo(0, 0);
+                    showPage('file-fir');
                 }
             });
         });
@@ -980,6 +1298,42 @@
                 setActiveForm(formType);
             });
         });
+
+        // Show specific page
+        function showPage(page) {
+            // Hide all pages
+            homePage.classList.add('hidden');
+            dashboardSection.classList.add('hidden');
+            fileFirPage.classList.add('hidden');
+            trackComplaintPage.classList.add('hidden');
+            emergencyPage.classList.add('hidden');
+            contactPage.classList.add('hidden');
+            
+            // Update navigation
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-page') === page) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            // Show requested page
+            if (page === 'home') {
+                homePage.classList.remove('hidden');
+                dashboardSection.classList.remove('hidden');
+            } else if (page === 'file-fir') {
+                fileFirPage.classList.remove('hidden');
+            } else if (page === 'track-complaint') {
+                trackComplaintPage.classList.remove('hidden');
+            } else if (page === 'emergency') {
+                emergencyPage.classList.remove('hidden');
+            } else if (page === 'contact') {
+                contactPage.classList.remove('hidden');
+            }
+            
+            window.scrollTo(0, 0);
+        }
 
         // Set active form type
         function setActiveForm(formType) {
@@ -997,10 +1351,94 @@
             
             // Update hidden input
             firTypeInput.value = formType;
-            
-            // Here you could also adjust form fields based on type
-            // For example, show/hide certain sections or change validation
         }
+
+        // Get current location
+        getLocationBtn.addEventListener('click', () => {
+            getLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Location...';
+            getLocationBtn.disabled = true;
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // Use reverse geocoding to get address (simulated here)
+                        document.getElementById('incidentLocation').value = 
+                            `Latitude: ${latitude.toFixed(6)}, Longitude: ${longitude.toFixed(6)}\n` +
+                            `Approximate Address: Connaught Place, New Delhi, India\n` +
+                            `(Location retrieved via GPS at ${new Date().toLocaleTimeString()})`;
+                        
+                        getLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Get Current Location';
+                        getLocationBtn.disabled = false;
+                    },
+                    (error) => {
+                        alert('Unable to retrieve your location. Please enter it manually.');
+                        console.error('Geolocation error:', error);
+                        getLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Get Current Location';
+                        getLocationBtn.disabled = false;
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser. Please enter your location manually.');
+                getLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Get Current Location';
+                getLocationBtn.disabled = false;
+            }
+        });
+
+        // Generate description with AI
+        generateDescriptionBtn.addEventListener('click', () => {
+            const incidentType = document.getElementById('incidentType').value;
+            const incidentDate = document.getElementById('incidentDate').value;
+            const incidentTime = document.getElementById('incidentTime').value;
+            
+            if (!incidentType) {
+                alert('Please select the type of incident first.');
+                return;
+            }
+            
+            generateDescriptionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            generateDescriptionBtn.disabled = true;
+            
+            // Simulate AI processing delay
+            setTimeout(() => {
+                const descriptions = {
+                    'theft': `On ${incidentDate || 'the mentioned date'}, at approximately ${incidentTime || 'the mentioned time'}, I discovered that my property had been stolen. The items missing include [describe items]. I last saw the items at [time] and noticed they were missing at [time]. There were no signs of forced entry. I suspect the theft occurred between these times.`,
+                    'burglary': `On ${incidentDate || 'the mentioned date'}, between ${incidentTime || 'the mentioned time'}, my premises were illegally entered without permission. I noticed [describe evidence of break-in]. The following items are missing: [list items]. The estimated value of stolen property is approximately [amount].`,
+                    'assault': `On ${incidentDate || 'the mentioned date'}, at approximately ${incidentTime || 'the mentioned time'}, I was physically assaulted by [number] individuals at [location]. The assailants [describe actions]. As a result, I sustained injuries including [describe injuries]. The incident was witnessed by [describe witnesses].`,
+                    'cyber': `On ${incidentDate || 'the mentioned date'}, I became aware of a cyber crime incident where [describe what happened]. The incident involved [describe method - phishing, hacking, etc.]. I have evidence including [describe evidence]. The impact of this incident includes [describe losses or damages].`,
+                    'harassment': `Since [date], I have been subjected to ongoing harassment. On ${incidentDate || 'the mentioned date'} at ${incidentTime || 'the mentioned time'}, the harassment escalated when [describe incident]. This pattern of behavior includes [describe previous incidents]. I have evidence including [describe evidence].`,
+                    'accident': `On ${incidentDate || 'the mentioned date'}, at approximately ${incidentTime || 'the mentioned time'}, I was involved in a [type of accident] at [location]. The accident occurred when [describe how it happened]. As a result, I sustained [describe injuries] and there was damage to [describe property damage].`,
+                    'other': `On ${incidentDate || 'the mentioned date'}, at approximately ${incidentTime || 'the mentioned time'}, an incident occurred where [describe what happened]. The incident involved [describe people involved]. I witnessed [describe what you saw]. The impact of this incident includes [describe consequences].`
+                };
+                
+                document.getElementById('incidentDescription').value = descriptions[incidentType] || descriptions['other'];
+                
+                generateDescriptionBtn.innerHTML = '<i class="fas fa-robot"></i> Generate with AI';
+                generateDescriptionBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Track complaint
+        trackBtn.addEventListener('click', () => {
+            const firNumber = document.getElementById('firNumber').value;
+            
+            if (!firNumber) {
+                alert('Please enter an FIR number to track.');
+                return;
+            }
+            
+            trackBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
+            trackBtn.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                trackingResults.classList.remove('hidden');
+                trackBtn.innerHTML = '<i class="fas fa-search"></i> Track Complaint';
+                trackBtn.disabled = false;
+            }, 1500);
+        });
 
         // Photo upload functionality
         document.getElementById('photoUpload').addEventListener('click', function() {
