@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-FIR | Online Police Complaint System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --primary-light: #534bae;
+            --primary-dark: #000051;
+            --secondary: #d32f2f;
+            --secondary-light: #ff6659;
+            --secondary-dark: #9a0007;
+            --text-on-primary: #ffffff;
+            --text-on-secondary: #ffffff;
+            --background: #f5f5f5;
+            --surface: #ffffff;
+            --error: #b00020;
+            --success: #00c853;
+            --warning: #ffab00;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-on-primary);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-subtext {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: var(--text-on-primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        nav a:hover, nav a.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: var(--text-on-secondary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--text-on-primary);
+            color: var(--text-on-primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(0, 1, 81, 0.9)), url('https://images.unsplash.com/photo-1586015555759-c3e098e8a524?ixlib=rb-4.0.3') center/cover no-repeat;
+            color: var(--text-on-primary);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            padding: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--primary);
+            font-size: 2.2rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-on-primary);
+            padding: 20px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            padding: 15px 25px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* FIR Form Styles */
+        .fir-form {
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .photo-upload {
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .photo-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .photo-upload i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .uploaded-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-thumbnail {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            height: 150px;
+        }
+
+        .photo-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--error);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: var(--text-on-primary);
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--text-on-primary);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            nav ul {
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .user-actions {
+                justify-content: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .card-header {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Print Styles */
+        @media print {
+            header, nav, .user-actions, .card-footer, footer, .btn {
+                display: none !important;
+            }
+            
+            .fir-form {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .hero {
+                background: none;
+                color: black;
+                padding: 20px 0;
+            }
+        }
+
+        /* Tabs for FIR Types */
+        .fir-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .fir-tab {
+            padding: 12px 25px;
+            background-color: #e0e0e0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .fir-tab.active {
+            background-color: var(--primary);
+            color: var(--text-on-primary);
+        }
+
+        .fir-tab:hover:not(.active) {
+            background-color: #d0d0d0;
+        }
+
+        /* Form type specific styles */
+        .form-type-indicator {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt fa-2x"></i>
+                <div>
+                    <div class="logo-text">e-FIR System</div>
+                    <div class="logo-subtext">Online Police Complaint Portal</div>
+                </div>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">File FIR</a></li>
+                    <li><a href="#">Track Complaint</a></li>
+                    <li><a href="#">Emergency</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-actions">
+                <button class="btn btn-outline"><i class="fas fa-user"></i> Login</button>
+                <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>File Police Complaints Online</h1>
+            <p>Report incidents, file FIRs, and track your complaints through our secure online portal. Accessible anytime, anywhere.</p>
+            <button class="btn btn-primary" id="startFirBtn"><i class="fas fa-plus-circle"></i> File a New Complaint</button>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard" id="dashboardSection">
+        <div class="container">
+            <h2 class="section-title">Services We Provide</h2>
+            
+            <div class="card-grid">
+                <div class="card" data-form-type="cognizable">
+                    <div class="card-header">Cognizable Offences FIR</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <p>File an FIR for serious crimes where police can arrest without a warrant (e.g., murder, rape, theft, robbery).</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+                
+                <div class="card" data-form-type="non-cognizable">
+                    <div class="card-header">Non-Cognizable Report (NCR)</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <p>Report less serious crimes where police need a magistrate's order to investigate (e.g., simple assault, defamation).</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+                
+                <div class="card" data-form-type="zero-fir">
+                    <div class="card-header">Zero FIR</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <p>File an FIR at any police station regardless of jurisdiction. It will be transferred to the appropriate station.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+
+                <div class="card" data-form-type="cyber">
+                    <div class="card-header">Cyber Crime</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <p>Report cyber crimes including online fraud, hacking, identity theft, and cyber harassment.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+                
+                <div class="card" data-form-type="women-safety">
+                    <div class="card-header">Women's Safety</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-female"></i>
+                        </div>
+                        <p>Report crimes against women including harassment, domestic violence, and abuse.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+
+                <div class="card" data-form-type="counter">
+                    <div class="card-header">Counter FIR</div>
+                    <div class="card-body">
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <p>File a counter complaint in situations where two parties accuse each other of offences from the same incident.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">File Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">FIR Classification Overview</h2>
+            
+            <div class="fir-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <h3 class="form-title"><i class="fas fa-info-circle"></i> Based on Cognizability</h3>
+                        <p><strong>Cognizable Offences:</strong> Serious crimes where police can arrest without warrant and investigate without magistrate's permission (e.g., murder, rape, theft).</p>
+                        <p><strong>Non-Cognizable Offences:</strong> Less serious crimes where police need magistrate's order to investigate (e.g., simple assault, defamation).</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3 class="form-title"><i class="fas fa-info-circle"></i> Special Categories</h3>
+                        <p><strong>Zero FIR:</strong> Can be filed at any police station regardless of jurisdiction.</p>
+                        <p><strong>E-FIR:</strong> Filed online through official police portals.</p>
+                        <p><strong>Counter FIR:</strong> Filed by opposing parties in the same incident.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIR Form Section (Initially Hidden) -->
+    <section class="dashboard hidden" id="formSection">
+        <div class="container">
+            <div class="fir-tabs">
+                <div class="fir-tab active" data-form-type="cognizable">Cognizable FIR</div>
+                <div class="fir-tab" data-form-type="non-cognizable">Non-Cognizable Report</div>
+                <div class="fir-tab" data-form-type="zero-fir">Zero FIR</div>
+                <div class="fir-tab" data-form-type="cyber">Cyber Crime</div>
+                <div class="fir-tab" data-form-type="women-safety">Women's Safety</div>
+                <div class="fir-tab" data-form-type="counter">Counter FIR</div>
+            </div>
+            
+            <div class="form-type-indicator" id="formTypeIndicator">
+                Filing: Cognizable Offences FIR
+            </div>
+            
+            <div class="fir-form">
+                <form id="firForm" action="https://api.web3forms.com/submit" method="POST">
+                    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                    <input type="hidden" name="fir_type" id="firType" value="cognizable">
+                    
+                    <!-- Section 1: Complainant Details -->
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-user-circle"></i> Complainant Details</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" name="fullName" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="fatherName">Father's/Husband's Name *</label>
+                                <input type="text" id="fatherName" name="fatherName" class="form-input" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="address">Complete Address *</label>
+                            <textarea id="address" name="address" class="form-textarea" required></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="idProof">ID Proof Type *</label>
+                                <select id="idProof" name="idProof" class="form-select" required>
+                                    <option value="">Select ID Proof</option>
+                                    <option value="aadhaar">Aadhaar Card</option>
+                                    <option value="voter">Voter ID</option>
+                                    <option value="driving">Driving License</option>
+                                    <option value="passport">Passport</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="idNumber">ID Proof Number *</label>
+                                <input type="text" id="idNumber" name="idNumber" class="form-input" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 2: Incident Details -->
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-exclamation-circle"></i> Incident Details</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="incidentType">Type of Incident *</label>
+                                <select id="incidentType" name="incidentType" class="form-select" required>
+                                    <option value="">Select Incident Type</option>
+                                    <option value="theft">Theft</option>
+                                    <option value="burglary">Burglary</option>
+                                    <option value="assault">Assault</option>
+                                    <option value="cyber">Cyber Crime</option>
+                                    <option value="harassment">Harassment</option>
+                                    <option value="accident">Accident</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="incidentDate">Date of Incident *</label>
+                                <input type="date" id="incidentDate" name="incidentDate" class="form-input" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="incidentTime">Time of Incident *</label>
+                                <input type="time" id="incidentTime" name="incidentTime" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="policeStation">Nearest Police Station *</label>
+                                <select id="policeStation" name="policeStation" class="form-select" required>
+                                    <option value="">Select Police Station</option>
+                                    <option value="ps1">Police Station 1</option>
+                                    <option value="ps2">Police Station 2</option>
+                                    <option value="ps3">Police Station 3</option>
+                                    <option value="ps4">Police Station 4</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="incidentLocation">Location of Incident *</label>
+                            <textarea id="incidentLocation" name="incidentLocation" class="form-textarea" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="incidentDescription">Detailed Description of Incident *</label>
+                            <textarea id="incidentDescription" name="incidentDescription" class="form-textarea" required></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 3: Accused Details -->
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-user-secret"></i> Accused Details (If Known)</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="accusedName">Accused Name(s)</label>
+                                <input type="text" id="accusedName" name="accusedName" class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="accusedAddress">Address</label>
+                                <input type="text" id="accusedAddress" name="accusedAddress" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="accusedDescription">Physical Description</label>
+                                <textarea id="accusedDescription" name="accusedDescription" class="form-textarea"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="vehicleDetails">Vehicle Details (If Any)</label>
+                                <textarea id="vehicleDetails" name="vehicleDetails" class="form-textarea"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 4: Evidence Upload -->
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-camera"></i> Evidence Upload</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Upload Photos (Maximum 5 images)</label>
+                            <div class="photo-upload" id="photoUpload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <p>JPEG, PNG (Max 5MB each)</p>
+                                <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                            </div>
+                            
+                            <div class="uploaded-photos" id="uploadedPhotos">
+                                <!-- Uploaded photos will appear here -->
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="otherEvidence">Other Evidence Details</label>
+                            <textarea id="otherEvidence" name="otherEvidence" class="form-textarea"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 5: Declaration -->
+                    <div class="form-section">
+                        <h3 class="form-title"><i class="fas fa-file-signature"></i> Declaration</h3>
+                        
+                        <div class="form-group">
+                            <div style="display: flex; gap: 10px; align-items: start;">
+                                <input type="checkbox" id="declaration" name="declaration" required style="margin-top: 5px;">
+                                <label for="declaration">I hereby declare that all the information provided by me is true to the best of my knowledge and belief. I understand that providing false information is punishable under law.</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row" style="margin-top: 30px;">
+                        <button type="button" class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);" id="backToDashboard">
+                            <i class="fas fa-arrow-left"></i> Back to Services
+                        </button>
+                        <button type="reset" class="btn btn-outline" style="color: var(--primary); border-color: var(--primary);">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit FIR
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print FIR
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">File FIR</a></li>
+                        <li><a href="#">Track Complaint</a></li>
+                        <li><a href="#">Emergency Contacts</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Important Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">IPC Sections</a></li>
+                        <li><a href="#">Your Rights</a></li>
+                        <li><a href="#">Zero FIR Information</a></li>
+                        <li><a href="#">Women Safety Laws</a></li>
+                        <li><a href="#">Cyber Crime Prevention</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone"></i> Emergency: 100</li>
+                        <li><i class="fas fa-envelope"></i> Email: support@efir.gov.in</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Police Headquarters, New Delhi</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 e-FIR System. All rights reserved.</p>
+                <p>This is an official platform for filing police complaints online.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM elements
+        const dashboardSection = document.getElementById('dashboardSection');
+        const formSection = document.getElementById('formSection');
+        const startFirBtn = document.getElementById('startFirBtn');
+        const backToDashboard = document.getElementById('backToDashboard');
+        const formTypeIndicator = document.getElementById('formTypeIndicator');
+        const firTypeInput = document.getElementById('firType');
+        const cards = document.querySelectorAll('.card');
+        const tabs = document.querySelectorAll('.fir-tab');
+
+        // Form type definitions
+        const formTypes = {
+            'cognizable': 'Cognizable Offences FIR',
+            'non-cognizable': 'Non-Cognizable Report (NCR)',
+            'zero-fir': 'Zero FIR',
+            'cyber': 'Cyber Crime Report',
+            'women-safety': 'Women\'s Safety Complaint',
+            'counter': 'Counter FIR'
+        };
+
+        // Show form section when "File a New Complaint" is clicked
+        startFirBtn.addEventListener('click', () => {
+            dashboardSection.classList.add('hidden');
+            formSection.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        });
+
+        // Go back to dashboard
+        backToDashboard.addEventListener('click', () => {
+            formSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        });
+
+        // Handle card clicks to show specific form type
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                
+                const formType = card.getAttribute('data-form-type');
+                if (formType) {
+                    setActiveForm(formType);
+                    dashboardSection.classList.add('hidden');
+                    formSection.classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                }
+            });
+        });
+
+        // Handle tab clicks
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const formType = tab.getAttribute('data-form-type');
+                setActiveForm(formType);
+            });
+        });
+
+        // Set active form type
+        function setActiveForm(formType) {
+            // Update tabs
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-form-type') === formType) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update form type indicator
+            formTypeIndicator.textContent = `Filing: ${formTypes[formType]}`;
+            
+            // Update hidden input
+            firTypeInput.value = formType;
+            
+            // Here you could also adjust form fields based on type
+            // For example, show/hide certain sections or change validation
+        }
+
+        // Photo upload functionality
+        document.getElementById('photoUpload').addEventListener('click', function() {
+            document.getElementById('photoInput').click();
+        });
+        
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const uploadedPhotos = document.getElementById('uploadedPhotos');
+            
+            for (let i = 0; i < files.length; i++) {
+                if (i >= 5) break; // Limit to 5 images
+                
+                const file = files[i];
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const photoThumbnail = document.createElement('div');
+                        photoThumbnail.className = 'photo-thumbnail';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        
+                        const removeBtn = document.createElement('div');
+                        removeBtn.className = 'remove-photo';
+                        removeBtn.innerHTML = '&times;';
+                        removeBtn.addEventListener('click', function() {
+                            photoThumbnail.remove();
+                        });
+                        
+                        photoThumbnail.appendChild(img);
+                        photoThumbnail.appendChild(removeBtn);
+                        uploadedPhotos.appendChild(photoThumbnail);
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('firForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const requiredFields = this.querySelectorAll('[required]');
+            let valid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    valid = false;
+                    field.style.borderColor = 'var(--error)';
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!valid) {
+                alert('Please fill all required fields.');
+                return;
+            }
+            
+            // If using Web3Forms, the form would submit to their endpoint
+            alert('FIR submitted successfully! You will receive a confirmation email with your FIR number.');
+            // this.submit(); // Uncomment when using with actual backend
+        });
+        
+        // Reset form fields styling on input
+        const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.style.borderColor = '#ddd';
+            });
+        });
+    </script>
+</body>
+</html>
